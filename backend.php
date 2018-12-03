@@ -1,12 +1,10 @@
 <?php
-// Connect to server and select databse.
-if (isset($_POST['title'], $_POST['link'], $_POST['description'], $_POST['publishedAt'])){
-    echo $_POST['title'];
-    $title = $_POST['title'];
-    $link = $_POST['link'];
-    $description = $_POST['description'];
-    $publishedAt = $_POST['publishedAt'];
-}
+$data = json_decode(file_get_contents('php://input', true));
+// var_dump($data);
+$title = $data->title;
+$link = $data->link;
+$description = $data->description;
+$publishedAt = $data->publishedAt;
 
 $query = "INSERT INTO news (title, link, description, publishedAt) VALUES (?, ?, ?, ?);";
 
