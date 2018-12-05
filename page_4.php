@@ -1,7 +1,7 @@
 <?php
 
 $data = array();
-$query = "SELECT * FROM news";
+$query = "SELECT * FROM news LIMIT 15, 5;";
 
 $con = mysqli_connect('localhost', 'root', '', 'nyt_news');
 $result = mysqli_query($con, $query);
