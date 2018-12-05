@@ -6,12 +6,21 @@ $link = $data->link;
 $description = $data->description;
 $publishedAt = $data->publishedAt;
 
-$query = "INSERT INTO news (title, link, description, publishedAt) VALUES (?, ?, ?, ?);";
+$conn = mysqli_connect('localhost', 'root', '', 'nyt_news');
+$repeatedElementsQuery = "SELECT * FROM news WHERE publishedAt = '$publishedAt';";
+$results = mysqli_query($conn, $repeatedElementsQuery);
+mysqli_close($conn);
 
-$con = mysqli_connect('localhost', 'root', '', 'nyt_news');
-$stmt = mysqli_prepare($con, $query);
+if($results->num_rows == 0){
+    $query = "INSERT INTO news (title, link, description, publishedAt) VALUES (?, ?, ?, ?);";
 
-mysqli_stmt_bind_param($stmt, 'ssss', $title, $link, $description, $publishedAt);
-mysqli_stmt_execute($stmt);
-mysqli_stmt_close($stmt);
-mysqli_close($con);
+    $con = mysqli_connect('localhost', 'root', '', 'nyt_news');
+    $stmt = mysqli_prepare($con, $query);
+
+    mysqli_stmt_bind_param($stmt, 'ssss', $title, $link, $description, $publishedAt);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+    mysqli_close($con);
+}else {
+    echo "new is already into the db";
+}
