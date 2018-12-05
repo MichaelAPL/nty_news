@@ -1,26 +1,16 @@
 <?php
-$text=$_POST['search']."*";
+$searchTerm = $_GET['search'];
 
-$mysqli = new mysqli('localhost', 'root', '', 'nyt_news');
-if ($mysqli) {
-  echo "No se pudo realizar la conexion "
+$query = "SELECT * FROM news WHERE match(title, description) against('$searchTerm' IN BOOLEAN MODE)";
+
+$con = mysqli_connect('localhost', 'root', '', 'nyt_news');
+$result = mysqli_query($con, $query);
+mysqli_close($con);
+
+$data = array();
+
+while ($row = mysqli_fetch_assoc($result)) {
+    $data[] = $row;
 }
-else {
-  $sql = "SELECT * FROM news WHERE MATCH (title, description) AGAINT ('".$text." IN BOOLEAN MODE')";
-  $result = $mysqli->query($sql);
-  if ($result) {
-    $row_cnt = $result->num_rows;
-    if($row_cnt==0){
-      echo "<h4>Not found</h4>";
-    }
-    $data = array();
-    while ($row = $result->fetch_array(MYSQLI_BOTH)) {
-      $data[] = $row;
-      shuffle($data)
-    }
-    echo json_encode($data);
-  } else {
-    echo "<h4>Not found</h4>";
-  }
-  $mysqli->close();
-}
+
+echo json_encode($data);
